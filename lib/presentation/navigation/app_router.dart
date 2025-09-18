@@ -13,6 +13,7 @@ import '../screens/arcade_mode_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
+import '../screens/badges_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -73,6 +74,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'settings',
             builder: (context, state) => const SettingsScreen(),
           ),
+          GoRoute(
+            path: '/badges',
+            name: 'badges',
+            builder: (context, state) => const BadgesScreen(),
+          ),
         ],
       ),
     ],
@@ -108,4 +114,5 @@ class AppRouter {
   static const String profile = '/home/profile';
   static const String dashboard = '/home/dashboard';
   static const String settings = '/home/settings';
+  static const String badges = '/home/badges';
 }

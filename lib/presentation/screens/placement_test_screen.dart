@@ -2,127 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../navigation/app_router.dart';
+import '../../data/providers/placement_test_provider.dart';
+import '../../data/repositories/question_repository.dart';
+import '../../data/models/question.dart';
 
-class PlacementTestScreen extends ConsumerStatefulWidget {
+class PlacementTestScreen extends ConsumerWidget {
   const PlacementTestScreen({super.key});
 
   @override
-  ConsumerState<PlacementTestScreen> createState() => _PlacementTestScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final testState = ref.watch(placementTestProvider);
+    final testNotifier = ref.read(placementTestProvider.notifier);
 
-class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
-  int _currentQuestionIndex = 0;
-  final List<String> _selectedAnswers = [];
-
-  final List<PlacementQuestion> _questions = [
-    PlacementQuestion(
-      question: '7 + 5 = ?',
-      options: ['11', '12', '13', '14'],
-      correctAnswer: '12',
-    ),
-    PlacementQuestion(
-      question: '24 ÷ 6 = ?',
-      options: ['3', '4', '5', '6'],
-      correctAnswer: '4',
-    ),
-    PlacementQuestion(
-      question: 'What is 1/2 + 1/4?',
-      options: ['1/6', '2/6', '3/4', '1/3'],
-      correctAnswer: '3/4',
-    ),
-    PlacementQuestion(
-      question: 'If x + 3 = 10, what is x?',
-      options: ['6', '7', '8', '13'],
-      correctAnswer: '7',
-    ),
-    PlacementQuestion(
-      question: 'What is the area of a rectangle with length 6 and width 4?',
-      options: ['10', '20', '24', '28'],
-      correctAnswer: '24',
-    ),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedAnswers.addAll(List.filled(_questions.length, ''));
-  }
-
-  void _selectAnswer(String answer) {
-    setState(() {
-      _selectedAnswers[_currentQuestionIndex] = answer;
-    });
-  }
-
-  void _nextQuestion() {
-    if (_currentQuestionIndex < _questions.length - 1) {
-      setState(() {
-        _currentQuestionIndex++;
-      });
-    } else {
-      _completeTest();
+    if (testState.isCompleted) {
+      return _CompletionScreen(
+        score: testState.score,
+        totalQuestions: testState.questions.length,
+        level: testState.determinedLevel!,
+        unlockedTopics: testState.unlockedTopics!,
+        onComplete: () {
+          // TODO: Save user profile with determined level
+          context.go(AppRouter.home);
+        },
+      );
     }
-  }
-
-  void _previousQuestion() {
-    if (_currentQuestionIndex > 0) {
-      setState(() {
-        _currentQuestionIndex--;
-      });
-    }
-  }
-
-  void _completeTest() {
-    final score = _calculateScore();
-
-    // TODO: Save placement test result
-    // TODO: Determine appropriate difficulty level
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Test Complete!'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Your score: ${score}/${_questions.length}'),
-            const SizedBox(height: 16),
-            const Text('Based on your performance, we\'ve set your difficulty level to help you learn effectively.'),
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.go(AppRouter.home);
-            },
-            child: const Text('Start Learning'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  int _calculateScore() {
-    int score = 0;
-    for (int i = 0; i < _questions.length; i++) {
-      if (_selectedAnswers[i] == _questions[i].correctAnswer) {
-        score++;
-      }
-    }
-    return score;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentQuestion = _questions[_currentQuestionIndex];
-    final selectedAnswer = _selectedAnswers[_currentQuestionIndex];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Placement Test (${_currentQuestionIndex + 1}/${_questions.length})'),
-        backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+        title: Text('Placement Test (${testState.currentQuestionIndex + 1}/${testState.questions.length})'),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -130,86 +38,25 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             LinearProgressIndicator(
-              value: (_currentQuestionIndex + 1) / _questions.length,
+              value: testState.progress,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
             const SizedBox(height: 32),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Question ${_currentQuestionIndex + 1}',
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      currentQuestion.question,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _QuestionCard(question: testState.currentQuestion),
             const SizedBox(height: 24),
             Expanded(
-              child: ListView.builder(
-                itemCount: currentQuestion.options.length,
-                itemBuilder: (context, index) {
-                  final option = currentQuestion.options[index];
-                  final isSelected = selectedAnswer == option;
-
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Card(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : null,
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: isSelected
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.outline,
-                          child: Text(
-                            String.fromCharCode(65 + index), // A, B, C, D
-                            style: TextStyle(
-                              color: isSelected
-                                  ? Theme.of(context).colorScheme.onPrimary
-                                  : Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        title: Text(option),
-                        onTap: () => _selectAnswer(option),
-                      ),
-                    ),
-                  );
-                },
+              child: _OptionsList(
+                question: testState.currentQuestion,
+                selectedAnswer: testState.currentAnswer,
+                onAnswerSelected: testNotifier.selectAnswer,
               ),
             ),
-            Row(
-              children: [
-                if (_currentQuestionIndex > 0)
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _previousQuestion,
-                      child: const Text('Previous'),
-                    ),
-                  ),
-                if (_currentQuestionIndex > 0) const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: selectedAnswer.isNotEmpty ? _nextQuestion : null,
-                    child: Text(_currentQuestionIndex == _questions.length - 1
-                        ? 'Complete'
-                        : 'Next'),
-                  ),
-                ),
-              ],
+            _NavigationButtons(
+              canGoBack: testState.currentQuestionIndex > 0,
+              canGoNext: testState.hasAnswer,
+              isLastQuestion: testState.isLastQuestion,
+              onPrevious: testNotifier.previousQuestion,
+              onNext: testNotifier.nextQuestion,
             ),
           ],
         ),
@@ -218,14 +65,311 @@ class _PlacementTestScreenState extends ConsumerState<PlacementTestScreen> {
   }
 }
 
-class PlacementQuestion {
-  final String question;
-  final List<String> options;
-  final String correctAnswer;
+class _QuestionCard extends StatelessWidget {
+  final Question question;
 
-  PlacementQuestion({
+  const _QuestionCard({required this.question});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                question.topic.toUpperCase(),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              question.question,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OptionsList extends StatelessWidget {
+  final Question question;
+  final String selectedAnswer;
+  final Function(String) onAnswerSelected;
+
+  const _OptionsList({
     required this.question,
-    required this.options,
-    required this.correctAnswer,
+    required this.selectedAnswer,
+    required this.onAnswerSelected,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: question.options.length,
+      itemBuilder: (context, index) {
+        final option = question.options[index];
+        final isSelected = selectedAnswer == option;
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Card(
+            elevation: isSelected ? 4 : 1,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            child: InkWell(
+              onTap: () => onAnswerSelected(option),
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          String.fromCharCode(65 + index), // A, B, C, D
+                          style: TextStyle(
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.onPrimary
+                                : Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        option,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _NavigationButtons extends StatelessWidget {
+  final bool canGoBack;
+  final bool canGoNext;
+  final bool isLastQuestion;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  const _NavigationButtons({
+    required this.canGoBack,
+    required this.canGoNext,
+    required this.isLastQuestion,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (canGoBack)
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: onPrevious,
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Previous'),
+            ),
+          ),
+        if (canGoBack) const SizedBox(width: 16),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: canGoNext ? onNext : null,
+            icon: Icon(isLastQuestion ? Icons.check : Icons.arrow_forward),
+            label: Text(isLastQuestion ? 'Complete Test' : 'Next'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CompletionScreen extends StatelessWidget {
+  final int score;
+  final int totalQuestions;
+  final DifficultyLevel level;
+  final List<String> unlockedTopics;
+  final VoidCallback onComplete;
+
+  const _CompletionScreen({
+    required this.score,
+    required this.totalQuestions,
+    required this.level,
+    required this.unlockedTopics,
+    required this.onComplete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final percentage = (score / totalQuestions * 100).round();
+    final levelDescription = QuestionRepository.getLevelDescription(level);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.emoji_events,
+                  size: 60,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text(
+                'Test Complete!',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Score:'),
+                          Text(
+                            '$score/$totalQuestions ($percentage%)',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Your Level:'),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              level.name.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                levelDescription,
+                style: Theme.of(context).textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Unlocked Topics:',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: unlockedTopics.map((topic) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondaryContainer,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              topic.replaceAll('_', ' ').toUpperCase(),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onComplete,
+                  icon: const Icon(Icons.rocket_launch),
+                  label: const Text('Start Learning Journey'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -5,12 +5,29 @@ import '../navigation/app_router.dart';
 import '../widgets/home_card.dart';
 import '../widgets/progress_indicator_widget.dart';
 import '../widgets/streak_widget.dart';
+import '../../data/providers/user_progress_provider.dart';
+import '../../data/models/badge.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userProgressProvider.notifier).loadUserProgress();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final progressState = ref.watch(userProgressProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MindMath'),
@@ -30,9 +47,9 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildWelcomeSection(context),
+            _buildWelcomeSection(context, progressState),
             const SizedBox(height: 24),
-            _buildProgressSection(context),
+            _buildProgressSection(context, progressState),
             const SizedBox(height: 24),
             _buildActivitiesSection(context),
             const SizedBox(height: 24),
@@ -43,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildWelcomeSection(BuildContext context) {
+  Widget _buildWelcomeSection(BuildContext context, UserProgressState progressState) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -64,14 +81,17 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const StreakWidget(currentStreak: 5, longestStreak: 12),
+            StreakWidget(
+              currentStreak: progressState.currentStreak,
+              longestStreak: progressState.longestStreak,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProgressSection(BuildContext context) {
+  Widget _buildProgressSection(BuildContext context, UserProgressState progressState) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,12 +102,127 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const ProgressIndicatorWidget(
-          level: 3,
-          currentXP: 750,
+        ProgressIndicatorWidget(
+          level: progressState.currentLevel,
+          currentXP: progressState.xpInCurrentLevel,
           totalXP: 1000,
         ),
+        if (progressState.recentBadges.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildRecentBadges(context, progressState),
+        ],
+        const SizedBox(height: 16),
+        _buildViewAllBadgesButton(context),
       ],
+    );
+  }
+
+  Widget _buildRecentBadges(BuildContext context, UserProgressState progressState) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Recent Achievements',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 80,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: progressState.recentBadges.length,
+            itemBuilder: (context, index) {
+              final badge = progressState.recentBadges[index];
+              return Container(
+                width: 60,
+                margin: const EdgeInsets.only(right: 12),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: _getBadgeColor(badge.rarity).withOpacity(0.1),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: _getBadgeColor(badge.rarity),
+                          width: 2,
+                        ),
+                      ),
+                      child: Icon(
+                        _getBadgeIcon(badge.iconName),
+                        color: _getBadgeColor(badge.rarity),
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      badge.name,
+                      style: Theme.of(context).textTheme.labelSmall,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getBadgeColor(BadgeRarity rarity) {
+    switch (rarity) {
+      case BadgeRarity.common:
+        return Colors.grey;
+      case BadgeRarity.rare:
+        return Colors.blue;
+      case BadgeRarity.epic:
+        return Colors.purple;
+      case BadgeRarity.legendary:
+        return Colors.orange;
+    }
+  }
+
+  IconData _getBadgeIcon(String iconName) {
+    switch (iconName) {
+      case 'local_fire_department':
+        return Icons.local_fire_department;
+      case 'star':
+        return Icons.star;
+      case 'check_circle':
+        return Icons.check_circle;
+      case 'flash_on':
+        return Icons.flash_on;
+      case 'calculate':
+        return Icons.calculate;
+      case 'pie_chart':
+        return Icons.pie_chart;
+      case 'square':
+        return Icons.square;
+      case 'baby_changing_station':
+        return Icons.baby_changing_station;
+      case 'school':
+        return Icons.school;
+      case 'weekend':
+        return Icons.weekend;
+      default:
+        return Icons.emoji_events;
+    }
+  }
+
+  Widget _buildViewAllBadgesButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => context.push(AppRouter.badges),
+        icon: const Icon(Icons.emoji_events),
+        label: const Text('View All Achievements'),
+      ),
     );
   }
 
