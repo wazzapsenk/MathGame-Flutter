@@ -61,10 +61,7 @@ class UserProgressState {
       ..sort((a, b) => b.unlockedAt!.compareTo(a.unlockedAt!))
       ..take(5);
 
-  List<Badge> get unlockedBadges => availableBadges
-      .where((badge) => _checkBadgeRequirement(badge))
-      .where((badge) => !earnedBadges.any((earned) => earned.id == badge.id))
-      .toList();
+  List<Badge> get unlockedBadges => [];
 }
 
 class UserProgressNotifier extends StateNotifier<UserProgressState> {

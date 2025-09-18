@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/providers/user_progress_provider.dart';
-import '../../data/models/badge.dart';
+import '../../data/models/badge.dart' as app_badge;
 
 class BadgesScreen extends ConsumerWidget {
   const BadgesScreen({super.key});
