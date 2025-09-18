@@ -7,13 +7,14 @@ import '../screens/onboarding_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/placement_test_screen.dart';
 import '../screens/daily_tasks_screen.dart';
-import '../screens/learn_mode_screen.dart';
+import '../screens/learn_screen.dart';
 import '../screens/practice_mode_screen.dart';
 import '../screens/arcade_mode_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/badges_screen.dart';
+import '../screens/accessibility_settings_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -47,7 +48,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/learn',
             name: 'learn',
-            builder: (context, state) => const LearnModeScreen(),
+            builder: (context, state) => const LearnScreen(),
           ),
           GoRoute(
             path: '/practice',
@@ -78,6 +79,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/badges',
             name: 'badges',
             builder: (context, state) => const BadgesScreen(),
+          ),
+          GoRoute(
+            path: '/accessibility-settings',
+            name: 'accessibility-settings',
+            builder: (context, state) => const AccessibilitySettingsScreen(),
           ),
         ],
       ),
@@ -115,4 +121,5 @@ class AppRouter {
   static const String dashboard = '/home/dashboard';
   static const String settings = '/home/settings';
   static const String badges = '/home/badges';
+  static const String accessibilitySettings = '/home/accessibility-settings';
 }

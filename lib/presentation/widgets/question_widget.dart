@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/question.dart';
+import '../../data/providers/tts_provider.dart';
 
-class QuestionWidget extends StatefulWidget {
+class QuestionWidget extends ConsumerStatefulWidget {
   final Question question;
   final Function(String answer, int hintsUsed) onAnswerSubmitted;
 
@@ -12,10 +14,10 @@ class QuestionWidget extends StatefulWidget {
   });
 
   @override
-  State<QuestionWidget> createState() => _QuestionWidgetState();
+  ConsumerState<QuestionWidget> createState() => _QuestionWidgetState();
 }
 
-class _QuestionWidgetState extends State<QuestionWidget> {
+class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
   String? selectedAnswer;
   int hintsUsed = 0;
   bool showExplanation = false;
@@ -72,6 +74,27 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   ),
                 ),
                 const Spacer(),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final ttsState = ref.watch(ttsProvider);
+                    final ttsNotifier = ref.read(ttsProvider.notifier);
+
+                    if (!ttsState.isEnabled) return const SizedBox.shrink();
+
+                    return IconButton(
+                      onPressed: () {
+                        ttsNotifier.speakQuestion(widget.question.question);
+                      },
+                      icon: const Icon(Icons.volume_up),
+                      tooltip: 'Listen to question',
+                      style: IconButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                        foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(

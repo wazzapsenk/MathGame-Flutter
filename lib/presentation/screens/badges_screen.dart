@@ -95,7 +95,7 @@ class BadgesScreen extends ConsumerWidget {
   }
 
   Widget _buildAllBadges(BuildContext context, UserProgressState state) {
-    final badgesByType = <BadgeType, List<Badge>>{};
+    final badgesByType = <app_badge.BadgeType, List<app_badge.Badge>>{};
     for (final badge in state.availableBadges) {
       badgesByType[badge.type] = [...(badgesByType[badge.type] ?? []), badge];
     }
@@ -141,26 +141,26 @@ class BadgesScreen extends ConsumerWidget {
     );
   }
 
-  String _getBadgeTypeName(BadgeType type) {
+  String _getBadgeTypeName(app_badge.BadgeType type) {
     switch (type) {
-      case BadgeType.streak:
+      case app_badge.BadgeType.streak:
         return 'Streak Badges';
-      case BadgeType.xp:
+      case app_badge.BadgeType.xp:
         return 'XP Badges';
-      case BadgeType.accuracy:
+      case app_badge.BadgeType.accuracy:
         return 'Accuracy Badges';
-      case BadgeType.speed:
+      case app_badge.BadgeType.speed:
         return 'Speed Badges';
-      case BadgeType.topic:
+      case app_badge.BadgeType.topic:
         return 'Topic Badges';
-      case BadgeType.special:
+      case app_badge.BadgeType.special:
         return 'Special Badges';
     }
   }
 }
 
 class _BadgeCard extends StatelessWidget {
-  final Badge badge;
+  final app_badge.Badge badge;
   final bool isEarned;
 
   const _BadgeCard({
@@ -334,15 +334,15 @@ class _BadgeCard extends StatelessWidget {
     );
   }
 
-  Color _getBadgeColor(BadgeRarity rarity) {
+  Color _getBadgeColor(app_badge.BadgeRarity rarity) {
     switch (rarity) {
-      case BadgeRarity.common:
+      case app_badge.BadgeRarity.common:
         return Colors.grey;
-      case BadgeRarity.rare:
+      case app_badge.BadgeRarity.rare:
         return Colors.blue;
-      case BadgeRarity.epic:
+      case app_badge.BadgeRarity.epic:
         return Colors.purple;
-      case BadgeRarity.legendary:
+      case app_badge.BadgeRarity.legendary:
         return Colors.orange;
     }
   }

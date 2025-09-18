@@ -6,6 +6,7 @@ import '../../data/models/daily_task.dart';
 import '../../core/constants/app_constants.dart';
 import '../widgets/task_card.dart';
 import '../widgets/question_widget.dart';
+import '../../l10n/app_localizations.dart';
 
 class DailyTasksScreen extends ConsumerStatefulWidget {
   const DailyTasksScreen({super.key});
@@ -39,7 +40,7 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Tasks'),
+        title: Text(AppLocalizations.of(context)!.dailyTasks),
         centerTitle: true,
       ),
       body: Padding(
@@ -50,7 +51,7 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
             _buildProgressCard(tasksState),
             const SizedBox(height: 24),
             Text(
-              'Today\'s Tasks',
+              AppLocalizations.of(context)!.todaysTasks,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -95,13 +96,13 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Daily Progress',
+                        AppLocalizations.of(context)!.dailyProgress,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
-                        '$completedTasks of $maxTasks tasks completed',
+                        AppLocalizations.of(context)!.tasksCompleted(completedTasks, maxTasks),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -144,14 +145,14 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'All tasks completed!',
+              AppLocalizations.of(context)!.allTasksCompleted,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Come back tomorrow for new challenges.',
+              AppLocalizations.of(context)!.comeBackTomorrow,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -174,14 +175,14 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Ready for today\'s challenge?',
+              AppLocalizations.of(context)!.readyForChallenge,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Complete ${AppConstants.questionsPerTask} questions + 1 special problem.',
+              AppLocalizations.of(context)!.questionsSpecialProblem(AppConstants.questionsPerTask),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -193,7 +194,7 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
                 ref.read(dailyTasksProvider.notifier).loadTasks();
               },
               icon: const Icon(Icons.play_arrow),
-              label: const Text('Start Daily Task'),
+              label: Text(AppLocalizations.of(context)!.startDailyTask),
             ),
           ],
         ),
@@ -248,7 +249,7 @@ class _TaskPlayScreenState extends ConsumerState<_TaskPlayScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Question ${_currentQuestionIndex + 1}/${allQuestions.length}'),
+        title: Text(AppLocalizations.of(context)!.question(_currentQuestionIndex + 1, allQuestions.length)),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
@@ -265,13 +266,7 @@ class _TaskPlayScreenState extends ConsumerState<_TaskPlayScreen> {
               onAnswerSubmitted: (answer, hintsUsed) {
                 final timeSpent = DateTime.now().difference(_questionStartTime!).inSeconds;
 
-                // Track progress for badges
-                final isCorrect = answer == currentQuestion.correctAnswer;
-                ref.read(userProgressProvider.notifier).recordQuestionAnswered(
-                  topic: currentQuestion.topic,
-                  isCorrect: isCorrect,
-                  timeSpent: timeSpent,
-                );
+                // Track progress for badges - now handled by offline service
 
                 ref.read(dailyTasksProvider.notifier).submitAnswer(
                   currentQuestion.id,
@@ -326,7 +321,7 @@ class _TaskCompletionScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                'Task Complete!',
+                AppLocalizations.of(context)!.taskComplete,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -340,7 +335,7 @@ class _TaskCompletionScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Correct Answers:'),
+                          Text(AppLocalizations.of(context)!.correctAnswers),
                           Text(
                             '$correctAnswers/$totalQuestions',
                             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -351,7 +346,7 @@ class _TaskCompletionScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Accuracy:'),
+                          Text(AppLocalizations.of(context)!.accuracy),
                           Text(
                             '$accuracy%',
                             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -362,7 +357,7 @@ class _TaskCompletionScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('XP Earned:'),
+                          Text(AppLocalizations.of(context)!.xpEarned),
                           Text(
                             '${task.totalXP}',
                             style: TextStyle(
@@ -383,16 +378,13 @@ class _TaskCompletionScreen extends ConsumerWidget {
                   onPressed: () {
                     // Update streak and task completion tracking
                     ref.read(userProgressProvider.notifier).updateStreak();
-                    ref.read(userProgressProvider.notifier).recordTaskCompleted(
-                      accuracy: task.accuracy,
-                    );
                     ref.read(userProgressProvider.notifier).addXP(task.totalXP);
 
                     ref.read(dailyTasksProvider.notifier).clearCurrentTask();
                     Navigator.of(context).pop();
                   },
                   icon: const Icon(Icons.home),
-                  label: const Text('Return to Home'),
+                  label: Text(AppLocalizations.of(context)!.returnToHome),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                   ),

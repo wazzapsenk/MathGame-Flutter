@@ -1,0 +1,240 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "MindMath",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  "appDescription": "Educational math game app for all ages",
+  "@appDescription": {
+    "description": "A short description of the app"
+  },
+
+  "home": "Home",
+  "settings": "Settings",
+  "profile": "Profile",
+  "learn": "Learn",
+  "practice": "Practice",
+  "arcade": "Arcade",
+  "dailyTasks": "Daily Tasks",
+
+  "welcome": "Welcome to MindMath!",
+  "welcomeMessage": "Let's start your mathematical journey.",
+
+  "skillLevel": "Skill Level",
+  "beginner": "Beginner",
+  "elementary": "Elementary",
+  "intermediate": "Intermediate",
+  "advanced": "Advanced",
+
+  "level": "Level",
+  "xp": "XP",
+  "streak": "Streak",
+  "longestStreak": "Longest Streak",
+  "totalXP": "Total XP",
+  "currentStreak": "Current Streak",
+
+  "dailyProgress": "Daily Progress",
+  "tasksCompleted": "{completed} of {total} tasks completed",
+  "@tasksCompleted": {
+    "description": "Shows how many tasks are completed out of total",
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+
+  "todaysTasks": "Today's Tasks",
+  "allTasksCompleted": "All tasks completed!",
+  "comeBackTomorrow": "Come back tomorrow for new challenges.",
+  "readyForChallenge": "Ready for today's challenge?",
+  "questionsSpecialProblem": "Complete {questions} questions + 1 special problem.",
+  "@questionsSpecialProblem": {
+    "description": "Description of daily task structure",
+    "placeholders": {
+      "questions": {
+        "type": "int"
+      }
+    }
+  },
+  "startDailyTask": "Start Daily Task",
+
+  "taskComplete": "Task Complete!",
+  "correctAnswers": "Correct Answers:",
+  "accuracy": "Accuracy:",
+  "xpEarned": "XP Earned:",
+  "returnToHome": "Return to Home",
+
+  "question": "Question {current}/{total}",
+  "@question": {
+    "description": "Shows current question number",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+
+  "practiceModeTitle": "Practice Mode",
+  "selectTopic": "Select Topic",
+  "selectDifficulty": "Select Difficulty",
+  "selectMode": "Select Mode",
+
+  "practiceTopicArithmetic": "Arithmetic",
+  "practiceTopicFractions": "Fractions",
+  "practiceTopicDecimals": "Decimals",
+  "practiceTopicGeometry": "Geometry",
+  "practiceTopicAlgebra": "Algebra",
+  "practiceTopicMixed": "Mixed",
+
+  "practiceModeEndless": "Endless",
+  "practiceModeTimed": "Timed",
+  "practiceModeTargetScore": "Target Score",
+
+  "timeLimit": "Time Limit",
+  "targetScore": "Target Score",
+  "minutes": "minutes",
+  "points": "points",
+  "startPractice": "Start Practice",
+
+  "arcadeTitle": "Arcade",
+  "fastOperations": "Fast Operations",
+  "fastOperationsDesc": "Solve math problems as fast as you can!",
+  "selectDifficultyLevel": "Select Difficulty Level",
+  "easy": "Easy",
+  "medium": "Medium",
+  "hard": "Hard",
+  "expert": "Expert",
+  "start": "Start",
+
+  "gameOver": "Game Over!",
+  "score": "Score",
+  "timeSpent": "Time Spent",
+  "finalAccuracy": "Final Accuracy",
+  "playAgain": "Play Again",
+  "backToMenu": "Back to Menu",
+
+  "learnTitle": "Learn",
+  "workedExamples": "Worked Examples",
+  "basicArithmetic": "Basic Arithmetic",
+  "fractionBasics": "Fraction Basics",
+  "decimalOperations": "Decimal Operations",
+  "geometryBasics": "Geometry Basics",
+  "algebraIntro": "Algebra Introduction",
+
+  "settingsTitle": "Settings",
+  "profileSection": "Profile",
+  "preferencesSection": "Preferences",
+  "supportSection": "Support",
+  "aboutSection": "About",
+
+  "editProfile": "Edit Profile",
+  "skillAssessmentTest": "Skill Assessment Test",
+  "language": "Language",
+  "theme": "Theme",
+  "notifications": "Notifications",
+  "sounds": "Sounds",
+  "accessibilityFeatures": "Accessibility Features",
+  "colorBlindMode": "Color Blind Mode",
+  "textToSpeech": "Text to Speech",
+  "helpCenter": "Help Center",
+  "contactSupport": "Contact Support",
+  "aboutApp": "About App",
+  "version": "Version",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+
+  "languageOptionEn": "English",
+  "languageOptionTr": "Türkçe",
+  "languageOptionDa": "Dansk",
+
+  "themeOptionSystem": "System",
+  "themeOptionLight": "Light",
+  "themeOptionDark": "Dark",
+
+  "placementTestTitle": "Skill Assessment Test",
+  "placementTestDescription": "Take this test to determine your current skill level and get personalized content.",
+  "takePlacementTest": "Take Assessment Test",
+  "retakePlacementTest": "Retake Assessment Test",
+
+  "badges": "Badges",
+  "achievements": "Achievements",
+  "badgeFirstLogin": "Welcome! You've started your math journey.",
+  "badgeCompletedFirstTask": "Great start! You completed your first daily task.",
+  "badgeStreak3": "On fire! You maintained a 3-day streak.",
+  "badgeStreak7": "Amazing! You maintained a 7-day streak.",
+  "badgeStreak30": "Incredible! You maintained a 30-day streak.",
+  "badgeLevel5": "Rising star! You reached level 5.",
+  "badgeLevel10": "Math enthusiast! You reached level 10.",
+  "badgeLevel25": "Math expert! You reached level 25.",
+  "badgeFastOperationsWin": "Speed demon! You won a Fast Operations game.",
+  "badgePerfectScore": "Perfectionist! You achieved 100% accuracy.",
+
+  "hints": "Hints",
+  "showHint": "Show Hint",
+  "nextQuestion": "Next Question",
+  "submit": "Submit",
+  "skip": "Skip",
+  "tryAgain": "Try Again",
+  "continueButton": "Continue",
+  "cancel": "Cancel",
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete",
+  "confirm": "Confirm",
+  "close": "Close",
+
+  "errorConnectionError": "Connection error. Please check your internet connection.",
+  "errorDataLoadError": "Error loading data. Please try again.",
+  "errorSavingError": "Error saving data. Please try again.",
+  "errorInvalidInput": "Invalid input. Please check your entry.",
+  "errorTimeout": "Request timed out. Please try again.",
+
+  "confirmExitGame": "Are you sure you want to exit the game? Your progress will be lost.",
+  "confirmResetProgress": "Are you sure you want to reset all progress? This action cannot be undone.",
+  "confirmDeleteProfile": "Are you sure you want to delete your profile? This action cannot be undone.",
+
+  "loading": "Loading...",
+  "pleaseWait": "Please wait...",
+  "noDataAvailable": "No data available",
+  "retry": "Retry",
+  "refresh": "Refresh",
+
+  "timeRemaining": "Time Remaining: {time}",
+  "@timeRemaining": {
+    "description": "Shows remaining time",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "currentScore": "Current Score: {score}",
+  "@currentScore": {
+    "description": "Shows current score",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+
+  "mathTopicAddition": "Addition",
+  "mathTopicSubtraction": "Subtraction",
+  "mathTopicMultiplication": "Multiplication",
+  "mathTopicDivision": "Division",
+  "mathTopicFractions": "Fractions",
+  "mathTopicDecimals": "Decimals",
+  "mathTopicPercentages": "Percentages",
+  "mathTopicGeometry": "Geometry",
+  "mathTopicAlgebra": "Algebra"
+}

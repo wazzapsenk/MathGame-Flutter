@@ -1,3 +1,10 @@
+enum SkillLevel {
+  beginner,
+  elementary,
+  intermediate,
+  advanced,
+}
+
 class UserProfile {
   final String id;
   final String name;
@@ -5,11 +12,11 @@ class UserProfile {
   final int totalXP;
   final int currentStreak;
   final int longestStreak;
-  final String difficulty;
-  final List<String> unlockedTopics;
-  final List<String> completedTopics;
+  final SkillLevel skillLevel;
+  final DateTime? lastActiveDate;
+  final Map<String, dynamic>? preferences;
   final DateTime createdAt;
-  final DateTime lastActiveAt;
+  final DateTime updatedAt;
 
   const UserProfile({
     required this.id,
@@ -18,11 +25,11 @@ class UserProfile {
     required this.totalXP,
     required this.currentStreak,
     required this.longestStreak,
-    required this.difficulty,
-    required this.unlockedTopics,
-    required this.completedTopics,
+    required this.skillLevel,
+    this.lastActiveDate,
+    this.preferences,
     required this.createdAt,
-    required this.lastActiveAt,
+    required this.updatedAt,
   });
 
   UserProfile copyWith({
@@ -32,11 +39,11 @@ class UserProfile {
     int? totalXP,
     int? currentStreak,
     int? longestStreak,
-    String? difficulty,
-    List<String>? unlockedTopics,
-    List<String>? completedTopics,
+    SkillLevel? skillLevel,
+    DateTime? lastActiveDate,
+    Map<String, dynamic>? preferences,
     DateTime? createdAt,
-    DateTime? lastActiveAt,
+    DateTime? updatedAt,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -45,11 +52,11 @@ class UserProfile {
       totalXP: totalXP ?? this.totalXP,
       currentStreak: currentStreak ?? this.currentStreak,
       longestStreak: longestStreak ?? this.longestStreak,
-      difficulty: difficulty ?? this.difficulty,
-      unlockedTopics: unlockedTopics ?? this.unlockedTopics,
-      completedTopics: completedTopics ?? this.completedTopics,
+      skillLevel: skillLevel ?? this.skillLevel,
+      lastActiveDate: lastActiveDate ?? this.lastActiveDate,
+      preferences: preferences ?? this.preferences,
       createdAt: createdAt ?? this.createdAt,
-      lastActiveAt: lastActiveAt ?? this.lastActiveAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -61,11 +68,11 @@ class UserProfile {
       'totalXP': totalXP,
       'currentStreak': currentStreak,
       'longestStreak': longestStreak,
-      'difficulty': difficulty,
-      'unlockedTopics': unlockedTopics.join(','),
-      'completedTopics': completedTopics.join(','),
+      'skillLevel': skillLevel.index,
+      'lastActiveDate': lastActiveDate?.millisecondsSinceEpoch,
+      'preferences': preferences?.toString(),
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'lastActiveAt': lastActiveAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
   }
 
@@ -77,11 +84,13 @@ class UserProfile {
       totalXP: map['totalXP']?.toInt() ?? 0,
       currentStreak: map['currentStreak']?.toInt() ?? 0,
       longestStreak: map['longestStreak']?.toInt() ?? 0,
-      difficulty: map['difficulty'] ?? 'beginner',
-      unlockedTopics: map['unlockedTopics']?.split(',') ?? [],
-      completedTopics: map['completedTopics']?.split(',') ?? [],
+      skillLevel: SkillLevel.values[map['skillLevel'] ?? 0],
+      lastActiveDate: map['lastActiveDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['lastActiveDate'])
+          : null,
+      preferences: map['preferences'] != null ? {} : null, // TODO: Parse JSON if needed
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
-      lastActiveAt: DateTime.fromMillisecondsSinceEpoch(map['lastActiveAt'] ?? 0),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] ?? 0),
     );
   }
 

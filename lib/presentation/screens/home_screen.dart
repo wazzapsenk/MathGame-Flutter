@@ -6,7 +6,8 @@ import '../widgets/home_card.dart';
 import '../widgets/progress_indicator_widget.dart';
 import '../widgets/streak_widget.dart';
 import '../../data/providers/user_progress_provider.dart';
-import '../../data/models/badge.dart';
+import '../../data/models/badge.dart' as app_badge;
+import '../../l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MindMath'),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -68,14 +69,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome back!',
+              AppLocalizations.of(context)!.welcome,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Ready for today\'s math adventure?',
+              AppLocalizations.of(context)!.welcomeMessage,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -96,7 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your Progress',
+          'Your Progress', // TODO: Add to localizations
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -122,7 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Recent Achievements',
+          AppLocalizations.of(context)!.achievements,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -175,15 +176,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Color _getBadgeColor(BadgeRarity rarity) {
+  Color _getBadgeColor(app_badge.BadgeRarity rarity) {
     switch (rarity) {
-      case BadgeRarity.common:
+      case app_badge.BadgeRarity.common:
         return Colors.grey;
-      case BadgeRarity.rare:
+      case app_badge.BadgeRarity.rare:
         return Colors.blue;
-      case BadgeRarity.epic:
+      case app_badge.BadgeRarity.epic:
         return Colors.purple;
-      case BadgeRarity.legendary:
+      case app_badge.BadgeRarity.legendary:
         return Colors.orange;
     }
   }
@@ -221,7 +222,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: OutlinedButton.icon(
         onPressed: () => context.push(AppRouter.badges),
         icon: const Icon(Icons.emoji_events),
-        label: const Text('View All Achievements'),
+        label: Text(AppLocalizations.of(context)!.achievements),
       ),
     );
   }
@@ -231,7 +232,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Daily Activities',
+          'Daily Activities', // TODO: Add to localizations
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -239,8 +240,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(height: 12),
         HomeCard(
           icon: Icons.assignment,
-          title: 'Daily Tasks',
-          subtitle: 'Complete today\'s challenges',
+          title: AppLocalizations.of(context)!.dailyTasks,
+          subtitle: 'Complete today\'s challenges', // TODO: Add to localizations
           color: Theme.of(context).colorScheme.primary,
           onTap: () => context.push(AppRouter.dailyTasks),
           badge: '2/3',
@@ -254,7 +255,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Learning Modes',
+          'Learning Modes', // TODO: Add to localizations
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -270,29 +271,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             HomeCard(
               icon: Icons.school,
-              title: 'Learn',
-              subtitle: 'Interactive lessons',
+              title: AppLocalizations.of(context)!.learn,
+              subtitle: 'Interactive lessons', // TODO: Add to localizations
               color: Colors.green,
               onTap: () => context.push(AppRouter.learn),
             ),
             HomeCard(
               icon: Icons.fitness_center,
-              title: 'Practice',
-              subtitle: 'Skill building',
+              title: AppLocalizations.of(context)!.practice,
+              subtitle: 'Skill building', // TODO: Add to localizations
               color: Colors.orange,
               onTap: () => context.push(AppRouter.practice),
             ),
             HomeCard(
               icon: Icons.games,
-              title: 'Arcade',
-              subtitle: 'Fun mini-games',
+              title: AppLocalizations.of(context)!.arcade,
+              subtitle: 'Fun mini-games', // TODO: Add to localizations
               color: Colors.purple,
               onTap: () => context.push(AppRouter.arcade),
             ),
             HomeCard(
               icon: Icons.analytics,
-              title: 'Dashboard',
-              subtitle: 'Track progress',
+              title: 'Dashboard', // TODO: Add to localizations
+              subtitle: 'Track progress', // TODO: Add to localizations
               color: Colors.blue,
               onTap: () => context.push(AppRouter.dashboard),
             ),

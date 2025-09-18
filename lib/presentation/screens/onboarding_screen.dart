@@ -35,6 +35,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       title: 'Learn Anywhere',
       description: 'Access all features offline - no internet required. Learn math whenever and wherever you want.',
     ),
+    OnboardingPage(
+      icon: Icons.quiz,
+      title: 'Skill Assessment',
+      description: 'Take our placement test anytime from Settings to find the perfect difficulty level for your learning journey.',
+    ),
   ];
 
   @override
@@ -55,7 +60,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _completeOnboarding() {
-    context.go(AppRouter.placementTest);
+    context.go(AppRouter.home);
   }
 
   @override
